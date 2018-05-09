@@ -68,12 +68,12 @@ build_mac_fn() {
     cp -r test/model ${BUILD_DIR}/build
     cd "${BUILD_DIR}"
     CMAKE="cmake"
-    "${CMAKE}" ../../.. \
+    "${CMAKE}" ../../.. -G Xcode \
         -DCMAKE_BUILD_TYPE="${MODE}" \
         -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
         -DIS_MAC=true
 
-    make -j 8
+    # make -j 8
 }
 
 build_android_fn () {
@@ -82,18 +82,21 @@ build_android_fn () {
         exit -1
     fi
     
-    PLATFORM="arm-v7a"
-#   PLATFORM="arm-v8a"
+    # PLATFORM="arm-v7a"
+    # PLATFORM="arm-v8a"
+    # PLATFORM="x86"
+    PLATFORM="x86_64"
     
     if [ "${PLATFORM}" = "arm-v7a" ]; then
         ABI="armeabi-v7a with NEON"
-        ARM_PLATFORM="V7"
     elif [ "${PLATFORM}" = "arm-v8a" ]; then
         ABI="arm64-v8a"
-        ARM_PLATFORM="V8"
+    elif [ "${PLATFORM}" = "x86" ]; then
+        ABI="x86"
+    elif [ "${PLATFORM}" = "x86_64" ]; then
+        ABI="x86_64"
     else
         echo "unknown platform!"
-        exit -1
     fi
     
     MODE="Release"
@@ -101,30 +104,32 @@ build_android_fn () {
     
     if [ "${PLATFORM}" = "arm-v7a" ]; then
         CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -fPIC -Wall -Wno-sign-compare -Wno-uninitialized -s -fPIE -pie -mtune=arm7 -mfpu=neon -llog"
-    elif [ "${PLATFORM}" = "arm-v8a" ]; then
-        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -fPIC -Wall -Wno-sign-compare -Wno-uninitialized -s -fPIE -pie -llog"
     else
-        echo "unknown platform!"
-        exit -1
+        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -fPIC -Wall -Wno-sign-compare -Wno-uninitialized -s -fPIE -pie -llog"
     fi
     
-    TOOLCHAIN_FILE="./android-cmake/android.toolchain.cmake"
+    # TOOLCHAIN_FILE="./android-cmake/android.toolchain.cmake"
+    TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain-Oz-lto.cmake"
+    # TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain.cmake"
+    
+    BUILD_DIR="build/release/16b/${PLATFORM}"
 
     CMAKE=$(realpath $(find "${NDK_ROOT}/../cmake/" -name "cmake" | grep "bin/cmake"))
     "${CMAKE}" . \
         "-GAndroid Gradle - Unix Makefiles" \
-        -B"build/release/${PLATFORM}" \
+        -B"${BUILD_DIR}" \
         -DANDROID_ABI="${ABI}" \
         -DCMAKE_BUILD_TYPE="${MODE}" \
         -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" \
         -DANDROID_PLATFORM="${ANDROID_PLATFORM_VERSION}" \
         -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
         -DANDROID="true" \
-        -D"${ARM_PLATFORM}"="true"
-    
-    cp -r test/model build/release/${PLATFORM}/build
-    cp scripts/deploy_android.sh build/release/${PLATFORM}/build
-    cd "./build/release/${PLATFORM}"
+        -DANDROID_DISABLE_FORMAT_STRING_CHECKS="true" \
+        -DANDROID_STL=c++_static
+
+    cp -r test/model ${BUILD_DIR}/build
+    cp scripts/deploy_android.sh ${BUILD_DIR}/build
+    cd "${BUILD_DIR}"
     make -j 8
 }
 
@@ -135,16 +140,13 @@ build_ios_fn () {
     BUILD_DIR=build/release/"${PLATFORM}"
     mkdir -p "${BUILD_DIR}"
 
-    cmake . \
+    cmake . -G Xcode \
         -B"${BUILD_DIR}" \
         -DCMAKE_BUILD_TYPE="${MODE}" \
-        -DCMAKE_TOOLCHAIN_FILE="${TOOLCHAIN_FILE}" \
-        -DIOS_PLATFORM=OS \
-        -DIS_IOS="true" \
-        -DV7="true"
+        -DCMAKE_CXX_FLAGS="-std=c++11"
     
     cd "${BUILD_DIR}"
-    make -j 8
+    # make -j 8
 }
 
 error_fn () {

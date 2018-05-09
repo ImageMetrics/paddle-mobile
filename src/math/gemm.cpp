@@ -20,6 +20,24 @@ SOFTWARE.
 ==============================================================================*/
 #include "math/gemm.h"
 
+#ifdef __APPLE__
+  #include "TargetConditionals.h"
+  #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+    #if defined(__arm64__)
+      #define MDL_V8
+    #else
+      #define MDL_V7_iOS
+    #endif
+  #endif
+#elif defined(__GNUC__)
+  #if defined(__arm__)
+    #define MDL_V7
+  #elif defined(__aarch64__)
+    #define MDL_V8
+  #endif
+#endif  // __APPLE__
+
+
 namespace mdl {
     vector<Gemmer *> Gemmer::gemmers;
 
@@ -261,58 +279,58 @@ namespace mdl {
 
             int kc1 = kc / 4, kc2 = kc % 4;
             asm volatile (
-            "subs %[kc1], %[kc1], #1\n\t"
-                    "blt end1\n\t"
+            "subs %w[kc1], %w[kc1], #1\n\t"
+                    "blt 1f\n\t"
                     "loop1: \n\t"
                     "ld1 {%[av].4S}, [%[A]], #16\n\t"
                     "ld1 {%[bv].4S}, [%[B]], #16\n\t"
-                    "fmla %[abv0].4S, %[av].4S, %[bv].4S[0]\n\t"
-                    "fmla %[abv1].4S, %[av].4S, %[bv].4S[1]\n\t"
-                    "fmla %[abv2].4S, %[av].4S, %[bv].4S[2]\n\t"
-                    "fmla %[abv3].4S, %[av].4S, %[bv].4S[3]\n\t"
+                    "fmla %[abv0].4S, %[av].4S, %[bv].S[0]\n\t"
+                    "fmla %[abv1].4S, %[av].4S, %[bv].S[1]\n\t"
+                    "fmla %[abv2].4S, %[av].4S, %[bv].S[2]\n\t"
+                    "fmla %[abv3].4S, %[av].4S, %[bv].S[3]\n\t"
                     // "add %[A], %[A], #16\n\t"
                     // "add %[B], %[B], #16\n\t"
                     "ld1 {%[av].4S}, [%[A]], #16\n\t"
                     "ld1 {%[bv].4S}, [%[B]], #16\n\t"
-                    "fmla %[abv0].4S, %[av].4S, %[bv].4S[0]\n\t"
-                    "fmla %[abv1].4S, %[av].4S, %[bv].4S[1]\n\t"
-                    "fmla %[abv2].4S, %[av].4S, %[bv].4S[2]\n\t"
-                    "fmla %[abv3].4S, %[av].4S, %[bv].4S[3]\n\t"
+                    "fmla %[abv0].4S, %[av].4S, %[bv].S[0]\n\t"
+                    "fmla %[abv1].4S, %[av].4S, %[bv].S[1]\n\t"
+                    "fmla %[abv2].4S, %[av].4S, %[bv].S[2]\n\t"
+                    "fmla %[abv3].4S, %[av].4S, %[bv].S[3]\n\t"
                     // "add %[A], %[A], #16\n\t"
                     // "add %[B], %[B], #16\n\t"
                     "ld1 {%[av].4S}, [%[A]], #16\n\t"
                     "ld1 {%[bv].4S}, [%[B]], #16\n\t"
-                    "fmla %[abv0].4S, %[av].4S, %[bv].4S[0]\n\t"
-                    "fmla %[abv1].4S, %[av].4S, %[bv].4S[1]\n\t"
-                    "fmla %[abv2].4S, %[av].4S, %[bv].4S[2]\n\t"
-                    "fmla %[abv3].4S, %[av].4S, %[bv].4S[3]\n\t"
+                    "fmla %[abv0].4S, %[av].4S, %[bv].S[0]\n\t"
+                    "fmla %[abv1].4S, %[av].4S, %[bv].S[1]\n\t"
+                    "fmla %[abv2].4S, %[av].4S, %[bv].S[2]\n\t"
+                    "fmla %[abv3].4S, %[av].4S, %[bv].S[3]\n\t"
                     // "add %[A], %[A], #16\n\t"
                     // "add %[B], %[B], #16\n\t"
                     "ld1 {%[av].4S}, [%[A]], #16\n\t"
                     "ld1 {%[bv].4S}, [%[B]], #16\n\t"
-                    "fmla %[abv0].4S, %[av].4S, %[bv].4S[0]\n\t"
-                    "fmla %[abv1].4S, %[av].4S, %[bv].4S[1]\n\t"
-                    "fmla %[abv2].4S, %[av].4S, %[bv].4S[2]\n\t"
-                    "fmla %[abv3].4S, %[av].4S, %[bv].4S[3]\n\t"
+                    "fmla %[abv0].4S, %[av].4S, %[bv].S[0]\n\t"
+                    "fmla %[abv1].4S, %[av].4S, %[bv].S[1]\n\t"
+                    "fmla %[abv2].4S, %[av].4S, %[bv].S[2]\n\t"
+                    "fmla %[abv3].4S, %[av].4S, %[bv].S[3]\n\t"
                     // "add %[A], %[A], #16\n\t"
                     // "add %[B], %[B], #16\n\t"
-                    "subs %[kc1], %[kc1], #1\n\t"
+                    "subs %w[kc1], %w[kc1], #1\n\t"
                     "bge loop1\n\t"
-                    "end1:\n\t"
-                    "subs %[kc2], %[kc2], #1\n\t"
-                    "blt end2\n\t"
+                    "1:\n\t"
+                    "subs %w[kc2], %w[kc2], #1\n\t"
+                    "blt 2f\n\t"
                     "loop2: \n\t"
                     "ld1 {%[av].4S}, [%[A]]\n\t"
                     "ld1 {%[bv].4S}, [%[B]]\n\t"
-                    "fmla %[abv0].4S, %[av].4S, %[bv].4S[0]\n\t"
-                    "fmla %[abv1].4S, %[av].4S, %[bv].4S[1]\n\t"
-                    "fmla %[abv2].4S, %[av].4S, %[bv].4S[2]\n\t"
-                    "fmla %[abv3].4S, %[av].4S, %[bv].4S[3]\n\t"
+                    "fmla %[abv0].4S, %[av].4S, %[bv].S[0]\n\t"
+                    "fmla %[abv1].4S, %[av].4S, %[bv].S[1]\n\t"
+                    "fmla %[abv2].4S, %[av].4S, %[bv].S[2]\n\t"
+                    "fmla %[abv3].4S, %[av].4S, %[bv].S[3]\n\t"
                     "add %[A], %[A], #16\n\t"
                     "add %[B], %[B], #16\n\t"
-                    "subs %[kc2], %[kc2], #1\n\t"
+                    "subs %w[kc2], %w[kc2], #1\n\t"
                     "bge loop2\n\t"
-                    "end2:\n\t"
+                    "2:\n\t"
             : [A]"=r"(A), [B]"=r"(B), [av]"=w"(av), [bv]"=w"(bv),
             [abv0]"=w"(abv0), [abv1]"=w"(abv1), [abv2]"=w"(abv2), [abv3]"=w"(abv3),
             [kc1]"=r"(kc1), [kc2]"=r"(kc2)

@@ -69,6 +69,7 @@ license and copyright terms herein.
 
 #include <map>
 #include <cstdio>
+#include <cstring>
 #include <chrono>
 #include <vector>
 #include <string>
@@ -90,7 +91,11 @@ license and copyright terms herein.
 #endif
 
 #ifndef MDL_MAC
-#include <arm_neon.h>
+  #if defined(__ARM_NEON)
+    #include <arm_neon.h>
+  #else
+    #include "neon_2_sse/NEON_2_SSE.h"
+  #endif
 #endif
 
 #include "json/json11.h"
