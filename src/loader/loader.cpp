@@ -22,9 +22,7 @@ SOFTWARE.
 
 #include <fstream>
 #include <fcntl.h>
-#include <zconf.h>
 #include <errno.h>
-#include <sys/mman.h>
 #include <math/gemm.h>
 
 #include "base/matrix.h"

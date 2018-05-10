@@ -19,7 +19,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==============================================================================*/
 #include <iostream>
-#include <dirent.h>
 
 #include "net.h"
 #include "base/matrix.h"
@@ -51,7 +50,7 @@ bool is_correct_result(vector<float> &result) {
     // // the correct result without quantification is : 87.5398 103.573 209.723 196.812
     // vector<float> correct_result{87.5398, 103.573, 209.723, 196.812};
     // the correct result with quantification is : 87.4985 103.567 209.752 196.71
-    vector<float> correct_result{64.777, 101.88, 210.735, 199.144};
+    vector<float> correct_result{64.777f, 101.88f, 210.735f, 199.144f};
     if (result.size() != 4) {
         return false;
     }

@@ -108,7 +108,7 @@ namespace mdl {
 
         string _name;
 
-        enum LayerType _layer_type;
+        LayerType _layer_type;
 
         vector<Matrix *> _input;
 

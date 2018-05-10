@@ -35,7 +35,15 @@ namespace mdl {
 
     struct Gemmer {
         static vector<Gemmer *> gemmers;
+#if _WIN32
+        __declspec(align(32)) float A_[MC * KC];
 
+        __declspec(align(32)) float B_[KC * NC];
+
+        __declspec(align(32)) float C_[MR * NR];
+
+        __declspec(align(32)) float AB_[MR * NR];
+#else
         float A_[MC * KC] __attribute__ ((aligned (32)));
 
         float B_[KC * NC] __attribute__ ((aligned (32)));
@@ -43,7 +51,7 @@ namespace mdl {
         float C_[MR * NR] __attribute__ ((aligned (32)));
 
         float AB_[MR * NR] __attribute__ ((aligned (32)));
-
+#endif
         void pack_MRxk(int k, const float *A, int incRowA, int incColA, float *buffer);
 
         void pack_A(int mc, int kc, const float *A, int incRowA, int incColA, float *buffer);
