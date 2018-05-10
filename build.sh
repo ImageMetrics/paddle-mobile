@@ -103,16 +103,16 @@ build_android_fn () {
     ANDROID_PLATFORM_VERSION="android-15"
     
     if [ "${PLATFORM}" = "arm-v7a" ]; then
-        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -fPIC -Wall -Wno-sign-compare -Wno-uninitialized -s -fPIE -pie -mtune=arm7 -mfpu=neon -llog"
+        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -Wall -Wno-sign-compare -Wno-uninitialized -s -mtune=arm7 -mfpu=neon -llog"
     else
-        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -fPIC -Wall -Wno-sign-compare -Wno-uninitialized -s -fPIE -pie -llog"
+        CXX_FLAGS="-fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -O3 -DNDEBUG -fexceptions -frtti -Wno-psabi -funwind-tables -fsigned-char -no-canonical-prefixes -fdata-sections -ffunction-sections -Wa,--noexecstack -fopenmp -std=c++11 -Wall -Wno-sign-compare -Wno-uninitialized -s -llog"
     fi
     
     # TOOLCHAIN_FILE="./android-cmake/android.toolchain.cmake"
-    TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain-Oz-lto.cmake"
-    # TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain.cmake"
+    # TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain-Oz-lto.cmake"
+    TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain.cmake"
     
-    BUILD_DIR="build/release/16b/${PLATFORM}"
+    BUILD_DIR="build/release/android/${PLATFORM}"
 
     CMAKE=$(realpath $(find "${NDK_ROOT}/../cmake/" -name "cmake" | grep "bin/cmake"))
     "${CMAKE}" . \
