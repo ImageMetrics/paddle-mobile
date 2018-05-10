@@ -43,7 +43,7 @@ namespace mdl {
         int channel = _input[0]->dimension(1);
         int size = _input[0]->count(2,3);
         for (int c = 0; c < channel; c++) {
-#ifdef ANDROID
+#if 1
             int align = size / 4;
             int remain = size - (align * 4);
 

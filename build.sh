@@ -68,12 +68,12 @@ build_mac_fn() {
     cp -r test/model ${BUILD_DIR}/build
     cd "${BUILD_DIR}"
     CMAKE="cmake"
-    "${CMAKE}" ../../.. -G Xcode \
+    "${CMAKE}" ../../.. \
         -DCMAKE_BUILD_TYPE="${MODE}" \
         -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" \
         -DIS_MAC=true
 
-    # make -j 8
+    make -j 8
 }
 
 build_android_fn () {

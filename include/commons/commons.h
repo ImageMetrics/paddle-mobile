@@ -87,8 +87,10 @@ license and copyright terms herein.
 
 #ifdef ANDROID
 #include <android/log.h>
-#include "math/neon_mathfun.h"
+//#include "math/neon_mathfun.h"
 #endif
+
+#include "math/neon_mathfun.h"
 
 #ifndef MDL_MAC
   #if defined(__ARM_NEON)
