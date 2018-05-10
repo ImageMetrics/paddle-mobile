@@ -28,7 +28,7 @@ SOFTWARE.
 namespace mdl {
     class SoftmaxLayer : public Layer {
     public:
-        SoftmaxLayer(const Json &config);
+        SoftmaxLayer(const Json &config, Loader *loader);
 
         ~SoftmaxLayer();
 

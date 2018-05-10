@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class FCLayer: public Layer {
         public:
-            FCLayer(const Json &config);
+            FCLayer(const Json &config, Loader *loader);
             ~FCLayer();
             void forward(int thread_num);
         private:

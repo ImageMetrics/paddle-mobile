@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class ConcatLayer: public Layer {
         public:
-            ConcatLayer(const Json &config);
+            ConcatLayer(const Json &config, Loader *loader);
             void forward(int thread_num);
     };
 };

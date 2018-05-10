@@ -19,9 +19,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==============================================================================*/
 #include <iostream>
+#include <fstream>
 
 #include "net.h"
-#include "base/matrix.h"
 #include "loader/loader.h"
 #include "math/gemm.h"
 
@@ -82,10 +82,10 @@ int run() {
             mdl::Gemmer::gemmers.push_back(new mdl::Gemmer());
         }
     }
-    mdl::Loader *loader = mdl::Loader::shared_instance();
-    std::string prefix("./model/googlenet/");
+    mdl::Loader *loader = new mdl::Loader();
+    std::string prefix("/Users/jeffpai/dev/paddle-mobile/build/release/x86/build/");
     auto t1 = mdl::time();
-    bool load_success = loader->load(prefix + "g_model.min.json", prefix + "g_data.min.bin");
+    bool load_success = loader->load(prefix + "model.min.json", prefix + "data.min.bin");
     auto t2 = mdl::time();
     cout << "load time : " << mdl::time_diff(t1, t2) << "ms" << endl;
     if (!load_success) {
@@ -96,14 +96,26 @@ int run() {
     if (!loader->get_loaded()) {
         throw_exception("loader is not loaded yet");
     }
-    mdl::Net *net = new mdl::Net(loader->_model);
+  
+  int size = 39 * 39;
+  float data[size];
+  
+  fstream fin(prefix + "input_normalised_transposed.txt", fstream::in);
+  for(int i = 0; i < size; ++i)
+  {
+    fin >> data[i];
+//    cout << data[i] << " ";
+  }
+  fin.close();
+    mdl::Net *net = new mdl::Net(loader);
+  
     net->set_thread_num(thread_num);
     int count = 1;
     double total = 0;
     vector<float> result;
     for (int i = 0; i < count; i++) {
         Time t1 = mdl::time();
-        result = net->predict(nullptr);
+        result = net->predict(data);
         Time t2 = mdl::time();
         double diff = mdl::time_diff(t1, t2);
         total += diff;

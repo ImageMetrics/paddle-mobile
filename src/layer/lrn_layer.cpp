@@ -21,15 +21,13 @@ SOFTWARE.
 #include "layer/lrn_layer.h"
 
 namespace mdl {
-    LrnLayer::LrnLayer(const Json &config): Layer(config) {
+    LrnLayer::LrnLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         auto &param = config["param"];
         _layer_type = LayerType::LRN;
         _alpha = param["alpha"].number_value();
         _beta = param["beta"].number_value();
         _local_size = param["local_size"].int_value();
-
-
 
         _scale_buffer = new Matrix();
         _scale_buffer->resize(_input[0]->get_dimensions());

@@ -31,14 +31,6 @@ using std::ifstream;
 using std::ofstream;
 
 namespace mdl {
-    Loader *Loader::_instance = nullptr;
-
-    Loader *Loader::shared_instance() {
-        if (_instance == nullptr) {
-            _instance = new Loader();
-        }
-        return _instance;
-    }
 
     char *get_binary_data(string filename) {
         FILE *file = fopen(filename.c_str(), "rb");

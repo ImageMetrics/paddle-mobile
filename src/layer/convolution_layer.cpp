@@ -24,8 +24,8 @@ SOFTWARE.
 #include <thread>
 
 namespace mdl {
-    ConvolutionLayer::ConvolutionLayer(const Json &config) : Layer(config), _col_buffer(nullptr),
-                                                             _bias_buffer(nullptr) {
+    ConvolutionLayer::ConvolutionLayer(const Json &config, Loader *loader) : Layer(config, loader), _col_buffer(nullptr),
+                                                                             _bias_buffer(nullptr) {
         assure_memory();
         _layer_type = LayerType::CONVOLUTION;
         _pid = config["pid"].int_value();

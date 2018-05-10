@@ -26,7 +26,7 @@ SOFTWARE.
 namespace mdl {
     class BiasLayer:public Layer {
     public:
-        BiasLayer(const Json &jsonValue);
+        BiasLayer(const Json &config, Loader *loader);
         ~BiasLayer();
         void forward();
     private:

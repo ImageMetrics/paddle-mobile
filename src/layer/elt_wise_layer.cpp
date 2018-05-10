@@ -22,7 +22,7 @@ SOFTWARE.
 #include "layer/elt_wise_layer.h"
 
 namespace mdl {
-    EltWiseLayer::EltWiseLayer(const Json &config):Layer(config) {
+    EltWiseLayer::EltWiseLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         _layer_type = LayerType::ELTWISE;
         _coeffs = vector<float>(_input[0]->count(), 1);

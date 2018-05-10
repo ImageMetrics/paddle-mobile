@@ -26,7 +26,7 @@ SOFTWARE.
 namespace mdl {
     class BatchNormalLayer: public Layer {
     public:
-        BatchNormalLayer(const Json &config);
+        BatchNormalLayer(const Json &config, Loader *loader);
         ~BatchNormalLayer();
         void forward(int thread_num);
 

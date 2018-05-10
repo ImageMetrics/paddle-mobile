@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class LrnLayer: public Layer {
         public:
-            LrnLayer(const Json &config);
+            LrnLayer(const Json &config, Loader *loader);
             ~LrnLayer();
             void forward(int thread_num);
         private:

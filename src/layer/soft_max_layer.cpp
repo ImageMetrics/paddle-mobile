@@ -22,7 +22,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    SoftmaxLayer::SoftmaxLayer(const Json &config) : Layer(config) {
+    SoftmaxLayer::SoftmaxLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         _layer_type = LayerType::SOFTMAX;
         _softmax_dim = 1;

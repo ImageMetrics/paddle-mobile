@@ -28,7 +28,7 @@ SOFTWARE.
 namespace mdl {
     class ScaleLayer : public Layer {
     public:
-        ScaleLayer(const Json &config);
+        ScaleLayer(const Json &config, Loader *loader);
 
         ~ScaleLayer();
 

@@ -31,11 +31,7 @@ namespace mdl {
      */
     class Loader {
     public:
-        /**
-         * get single instance of loader
-         * @return Loader object
-         */
-        static Loader *shared_instance();
+        Loader() : _loaded(false), _cleared(true) {}
 
         /**
          * json object for the json file of net description
@@ -70,10 +66,6 @@ namespace mdl {
         bool _loaded;
 
         bool _cleared;
-
-        static Loader *_instance;
-
-        Loader() : _loaded(false), _cleared(true) {}
 
         /**
          * load the json file of net description and params

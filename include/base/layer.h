@@ -32,15 +32,18 @@ namespace mdl {
         RELU, SPLIT, SCALE, BATCHNORMAL, SOFTMAX, SIGMOID, BIAS,
     ELTWISE};
 
+    class Loader;
+  
     class Layer {
     public:
 
         /**
          * init layer with a json object which specifies the name & weight matix & shape of input & output matrix
          * @param config
+         * @param loader
          * @return
          */
-        Layer(const Json &config);
+        Layer(const Json &config, Loader *loader);
 
         virtual ~Layer() {
         }

@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class ReluLayer: public Layer {
         public:
-            ReluLayer(const Json &config);
+            ReluLayer(const Json &config, Loader *loader);
             void forward(int thread_num);
     };
 };

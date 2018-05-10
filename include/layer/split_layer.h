@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class SplitLayer: public Layer {
         public:
-            SplitLayer(const Json &config);
+            SplitLayer(const Json &config, Loader *loader);
             void forward(int thread_num);
     };
 };

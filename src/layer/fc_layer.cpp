@@ -23,7 +23,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    FCLayer::FCLayer(const Json &config): Layer(config) {
+    FCLayer::FCLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         auto &param = config["param"];
         _layer_type = LayerType::FULLCONNECT;

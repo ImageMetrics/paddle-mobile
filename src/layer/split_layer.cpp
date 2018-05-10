@@ -21,7 +21,7 @@ SOFTWARE.
 #include "layer/split_layer.h"
 
 namespace mdl {
-    SplitLayer::SplitLayer(const Json &config): Layer(config) {
+    SplitLayer::SplitLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         _layer_type = LayerType::SPLIT;
     }

@@ -34,7 +34,7 @@ namespace mdl {
          * @param config
          * @return
          */
-        Net(const Json &config);
+        Net(Loader *loader);
 
         ~Net();
 
@@ -76,6 +76,8 @@ namespace mdl {
         int _thread_num;
 
         vector<Layer *> _layers;
+      
+        Loader * _loader;
 
 #ifdef NEED_DUMP
         void dump_with_quantification(string filename);

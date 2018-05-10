@@ -22,7 +22,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    BiasLayer::BiasLayer(const Json &config) : Layer(config) {
+    BiasLayer::BiasLayer(const Json &config, Loader *loader) : Layer(config, loader) {
         assure_memory();
         _layer_type = LayerType::BIAS;
         int axis = 1;

@@ -44,34 +44,35 @@ SOFTWARE.
 #endif
 
 namespace mdl {
-    Net::Net(const Json &config) : _thread_num(1) {
+    Net::Net(Loader *loader) : _thread_num(1), _loader(loader) {
+        const Json &config = _loader->_model;
         for (const auto &layer_config: config["layer"].array_items()) {
             Layer *layer = nullptr;
             string type = layer_config["type"].string_value();
             if (type == "ConcatLayer") {
-                layer = new ConcatLayer(layer_config);
+                layer = new ConcatLayer(layer_config, loader);
             } else if (type == "ConvolutionLayer") {
-                layer = new ConvolutionLayer(layer_config);
+                layer = new ConvolutionLayer(layer_config, loader);
             } else if (type == "FCLayer") {
-                layer = new FCLayer(layer_config);
+                layer = new FCLayer(layer_config, loader);
             } else if (type == "PoolingLayer") {
-                layer = new PoolingLayer(layer_config);
+                layer = new PoolingLayer(layer_config, loader);
             } else if (type == "ReluLayer") {
-                layer = new ReluLayer(layer_config);
+                layer = new ReluLayer(layer_config, loader);
             } else if (type == "SplitLayer") {
-                layer = new SplitLayer(layer_config);
+                layer = new SplitLayer(layer_config, loader);
             } else if (type == "LrnLayer") {
-                layer = new LrnLayer(layer_config);
+                layer = new LrnLayer(layer_config, loader);
             } else if (type == "ScaleLayer") {
-                layer = new ScaleLayer(layer_config);
+                layer = new ScaleLayer(layer_config, loader);
             } else if (type == "BatchNormLayer") {
-                layer = new BatchNormalLayer(layer_config);
+                layer = new BatchNormalLayer(layer_config, loader);
             } else if (type == "SoftmaxLayer") {
-                layer = new SoftmaxLayer(layer_config);
+                layer = new SoftmaxLayer(layer_config, loader);
             } else if (type == "SigmoidLayer") {
-                layer = new SigmoidLayer(layer_config);
+                layer = new SigmoidLayer(layer_config, loader);
             } else if (type == "EltwiseLayer") {
-                layer = new EltWiseLayer(layer_config);
+                layer = new EltWiseLayer(layer_config, loader);
             }
 
             if (layer) {
@@ -106,7 +107,7 @@ namespace mdl {
     vector<float> Net::forward_from_to(float *image, int start, int end, bool sampling) {
         vector<float> result;
         if (image == nullptr) {
-            Matrix *test_data_matrix = Loader::shared_instance()->_matrices[matrix_name_test_data];
+            Matrix *test_data_matrix = _loader->_matrices[matrix_name_test_data];
             if (test_data_matrix == nullptr) {
                 throw_exception("test_data_matrix is nullptr");
             }
@@ -116,7 +117,7 @@ namespace mdl {
             throw_exception("image is still nullptr");
         }
 
-        Matrix *data_matrix = Loader::shared_instance()->_matrices[matrix_name_data];
+        Matrix *data_matrix = _loader->_matrices[matrix_name_data];
         if (data_matrix == nullptr) {
             throw_exception("data_matrix is nullptr");
         }
@@ -209,7 +210,7 @@ namespace mdl {
                 total_size += matrix->count() * sizeof(uint8_t);
             }
         }
-        Matrix *test_data_matrix = Loader::shared_instance()->_matrices[matrix_name_test_data];
+        Matrix *test_data_matrix = _loader->_matrices[matrix_name_test_data];
         if (test_data_matrix) {
             matrix_count++;
             total_size += test_data_matrix->count() * sizeof(uint8_t);
@@ -313,7 +314,7 @@ namespace mdl {
                 total_size += matrix->count() * sizeof(float);
             }
         }
-        Matrix *test_data_matrix = Loader::shared_instance()->_matrices[matrix_name_test_data];
+        Matrix *test_data_matrix = _loader->_matrices[matrix_name_test_data];
         if (test_data_matrix) {
             matrix_count++;
             total_size += test_data_matrix->count() * sizeof(float);
