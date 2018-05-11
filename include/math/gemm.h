@@ -43,6 +43,15 @@ namespace mdl {
         __declspec(align(32)) float C_[MR * NR];
 
         __declspec(align(32)) float AB_[MR * NR];
+        void* operator new(size_t i)
+        {
+          return _mm_malloc(i, 32);
+        }
+
+        void operator delete(void* p)
+        {
+          _mm_free(p);
+        }
 #else
         float A_[MC * KC] __attribute__ ((aligned (32)));
 
