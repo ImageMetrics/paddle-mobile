@@ -79,11 +79,11 @@ int run() {
     int thread_num = 3;
     if (mdl::Gemmer::gemmers.size() == 0) {
         for (int i = 0; i < max(thread_num, 3); i++) {
-            mdl::Gemmer::gemmers.push_back(new mdl::Gemmer());
+            mdl::Gemmer::gemmers.push_back(std::shared_ptr<mdl::Gemmer>(new mdl::Gemmer()));
         }
     }
-    mdl::Loader *loader = new mdl::Loader();
-    std::string prefix("/Users/jeffpai/dev/paddle-mobile/build/release/x86/build/");
+    std::shared_ptr<mdl::Loader> loader(new mdl::Loader());
+    std::string prefix("K:/paddle-mobile/build/x64/build/");
     auto t1 = mdl::time();
     bool load_success = loader->load(prefix + "model.min.json", prefix + "data.min.bin");
     auto t2 = mdl::time();
@@ -97,7 +97,7 @@ int run() {
         throw_exception("loader is not loaded yet");
     }
   
-  int size = 39 * 39;
+  const int size = 39 * 39;
   float data[size];
   
   fstream fin(prefix + "input_normalised_transposed.txt", fstream::in);
@@ -107,7 +107,7 @@ int run() {
 //    cout << data[i] << " ";
   }
   fin.close();
-    mdl::Net *net = new mdl::Net(loader);
+    mdl::Net *net = new mdl::Net(loader.get());
   
     net->set_thread_num(thread_num);
     int count = 1;
@@ -129,7 +129,6 @@ int run() {
 //    cout << "the max prob index = "<<find_max(result)<<endl;
     cout << "Done!" << endl;
 //    cout << "it " << (is_correct_result(result) ? "is" : "isn't") << " a correct result." << endl;
-    loader->clear();
     delete net;
     return 0;
 }

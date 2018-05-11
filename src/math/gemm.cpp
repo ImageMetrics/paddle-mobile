@@ -39,7 +39,7 @@ SOFTWARE.
 
 
 namespace mdl {
-    vector<Gemmer *> Gemmer::gemmers;
+    vector< std::shared_ptr<Gemmer> > Gemmer::gemmers;
 
     void Gemmer::pack_MRxk(int k, const float *A, int incRowA, int incColA, float *buffer) {
         int j, a2 = incRowA, a3 = 2 * incRowA, a4 = 3 * incRowA;

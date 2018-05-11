@@ -33,6 +33,10 @@ namespace mdl {
     public:
         Loader() : _loaded(false), _cleared(true) {}
 
+        ~Loader() {
+            clear();
+        }
+
         /**
          * json object for the json file of net description
          */

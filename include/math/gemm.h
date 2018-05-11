@@ -34,7 +34,7 @@ namespace mdl {
     constexpr const int NR = 4;
 
     struct Gemmer {
-        static vector<Gemmer *> gemmers;
+        static vector< std::shared_ptr<Gemmer> > gemmers;
 #if _WIN32
         __declspec(align(32)) float A_[MC * KC];
 
