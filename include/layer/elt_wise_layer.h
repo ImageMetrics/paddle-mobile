@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class EltWiseLayer : public Layer {
     public:
-        EltWiseLayer(const Json &config, Loader *loader);
+        EltWiseLayer(const Json &config, Net *net);
         ~EltWiseLayer();
         void forward(int thread_num);
         void forward_sum();

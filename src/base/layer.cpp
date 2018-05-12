@@ -20,11 +20,13 @@ SOFTWARE.
 ==============================================================================*/
 #include "base/layer.h"
 #include "loader/loader.h"
+#include "net.h"
 
 namespace mdl {
 
-    Layer::Layer(const Json &config, Loader *loader) {
+    Layer::Layer(const Json &config, Net *net) : _gemmers(net->getGemmers()) {
         _name = config["name"].string_value();
+        Loader *loader = net->getLoader();
         string matrix_name = "";
         for (int i = 0; i < config["input"].array_items().size(); ++i) {
             matrix_name = config["input"][i].string_value();

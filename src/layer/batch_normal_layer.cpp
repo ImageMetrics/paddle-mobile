@@ -24,7 +24,7 @@ SOFTWARE.
 
 namespace mdl {
 
-    BatchNormalLayer::BatchNormalLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    BatchNormalLayer::BatchNormalLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::BATCHNORMAL;
         _channels = _input[0]->dimension(1);
@@ -114,14 +114,14 @@ namespace mdl {
                       _variance->get_data());
 
         // replicate mean to input size
-        Gemmer::gemmers[0]->sgemm(num, _channels, 1,
+        _gemmers[0]->sgemm(num, _channels, 1,
                                   _batch_sum_multiplier->get_data(),
                                   _mean->get_data(),
                                   _num_by_chans->get_data(),
                                   1, 0.);
 
         // substact mean for data in output matrix
-        Gemmer::gemmers[0]->sgemm(_channels * num, spatial_dim,
+        _gemmers[0]->sgemm(_channels * num, spatial_dim,
                                   1,
                                   _num_by_chans->get_data(),
                                   _spatial_sum_mutiplier->get_data(),
@@ -136,13 +136,13 @@ namespace mdl {
                     0.5f, _variance->get_data());
 
         // replicate variance to input size
-        Gemmer::gemmers[0]->sgemm(num, _channels, 1,
+        _gemmers[0]->sgemm(num, _channels, 1,
                                   _batch_sum_multiplier->get_data(),
                                   _variance->get_data(),
                                   _num_by_chans->get_data(),
                                   1, 0.);
 
-        Gemmer::gemmers[0]->sgemm(_channels * num, spatial_dim,
+        _gemmers[0]->sgemm(_channels * num, spatial_dim,
                                   1, _num_by_chans->get_data(),
                                   _spatial_sum_mutiplier->get_data(),
                                   _temp->get_data(), 1.0, 0.);

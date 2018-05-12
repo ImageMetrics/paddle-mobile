@@ -23,7 +23,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    FCLayer::FCLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    FCLayer::FCLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         auto &param = config["param"];
         _layer_type = LayerType::FULLCONNECT;
@@ -49,8 +49,8 @@ namespace mdl {
         int n = _output_num;
         int k = _input[0]->count(1);
 
-        Gemmer::gemmers[0]->sgemm(m, n, k, input_data, weight_data, output_data);
-        Gemmer::gemmers[0]->sgemm(m, n, 1, _bias_buffer->get_data(), bias_data, output_data, 1.0, 1.0);
+        _gemmers[0]->sgemm(m, n, k, input_data, weight_data, output_data);
+        _gemmers[0]->sgemm(m, n, 1, _bias_buffer->get_data(), bias_data, output_data, 1.0, 1.0);
 
         descript();
     }

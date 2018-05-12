@@ -21,7 +21,7 @@ SOFTWARE.
 #include "layer/pooling_layer.h"
 
 namespace mdl {
-    PoolingLayer::PoolingLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    PoolingLayer::PoolingLayer(const Json &config, Net *net) : Layer(config, net) {
         auto &param = config["param"];
         _layer_type = LayerType::POOL;
         _pid = config["pid"].int_value();

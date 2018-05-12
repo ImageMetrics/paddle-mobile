@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class SigmoidLayer: public Layer {
     public:
-        SigmoidLayer(const Json &config, Loader *loader);
+        SigmoidLayer(const Json &config, Net *net);
         ~SigmoidLayer();
         void forward(int thread_num);
 

@@ -22,7 +22,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    BiasLayer::BiasLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    BiasLayer::BiasLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::BIAS;
         int axis = 1;
@@ -52,7 +52,7 @@ namespace mdl {
         float *output_data = _output[0]->get_data();
         float *bias_data = _bias->get_data();
         for (int i = 0; i < _outer_dim; ++i) {
-            Gemmer::gemmers[0]->sgemm(_bias_dim, _inner_dim, 1, bias_data, _bias_multiplier->get_data(),
+            _gemmers[0]->sgemm(_bias_dim, _inner_dim, 1, bias_data, _bias_multiplier->get_data(),
                                       output_data, 1, 1);
             output_data += _dim;
 

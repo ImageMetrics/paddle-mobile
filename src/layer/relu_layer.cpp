@@ -21,7 +21,7 @@ SOFTWARE.
 #include "layer/relu_layer.h"
 
 namespace mdl {
-    ReluLayer::ReluLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    ReluLayer::ReluLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::RELU;
         _pid = config["pid"].int_value();

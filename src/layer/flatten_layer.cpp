@@ -22,7 +22,7 @@ SOFTWARE.
 #include "layer/flatten_layer.h"
 
 namespace mdl {
-    FlattenLayer::FlattenLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    FlattenLayer::FlattenLayer(const Json &config, Net *net) : Layer(config, net) {
         auto &param = config["param"];
         flatten_start = param["start"].int_value();
         int input_dimensions = _input[0]->get_dimensions().size();

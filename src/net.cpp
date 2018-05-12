@@ -44,35 +44,36 @@ SOFTWARE.
 #endif
 
 namespace mdl {
-    Net::Net(Loader *loader) : _thread_num(1), _loader(loader) {
+    Net::Net(Loader *loader) : _thread_num(0), _loader(loader) {
         const Json &config = _loader->_model;
+        set_thread_num(1);
         for (const auto &layer_config: config["layer"].array_items()) {
             Layer *layer = nullptr;
             string type = layer_config["type"].string_value();
             if (type == "ConcatLayer") {
-                layer = new ConcatLayer(layer_config, loader);
+                layer = new ConcatLayer(layer_config, this);
             } else if (type == "ConvolutionLayer") {
-                layer = new ConvolutionLayer(layer_config, loader);
+                layer = new ConvolutionLayer(layer_config, this);
             } else if (type == "FCLayer") {
-                layer = new FCLayer(layer_config, loader);
+                layer = new FCLayer(layer_config, this);
             } else if (type == "PoolingLayer") {
-                layer = new PoolingLayer(layer_config, loader);
+                layer = new PoolingLayer(layer_config, this);
             } else if (type == "ReluLayer") {
-                layer = new ReluLayer(layer_config, loader);
+                layer = new ReluLayer(layer_config, this);
             } else if (type == "SplitLayer") {
-                layer = new SplitLayer(layer_config, loader);
+                layer = new SplitLayer(layer_config, this);
             } else if (type == "LrnLayer") {
-                layer = new LrnLayer(layer_config, loader);
+                layer = new LrnLayer(layer_config, this);
             } else if (type == "ScaleLayer") {
-                layer = new ScaleLayer(layer_config, loader);
+                layer = new ScaleLayer(layer_config, this);
             } else if (type == "BatchNormLayer") {
-                layer = new BatchNormalLayer(layer_config, loader);
+                layer = new BatchNormalLayer(layer_config, this);
             } else if (type == "SoftmaxLayer") {
-                layer = new SoftmaxLayer(layer_config, loader);
+                layer = new SoftmaxLayer(layer_config, this);
             } else if (type == "SigmoidLayer") {
-                layer = new SigmoidLayer(layer_config, loader);
+                layer = new SigmoidLayer(layer_config, this);
             } else if (type == "EltwiseLayer") {
-                layer = new EltWiseLayer(layer_config, loader);
+                layer = new EltWiseLayer(layer_config, this);
             }
 
             if (layer) {

@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class ConvolutionLayer: public Layer {
         public:
-            ConvolutionLayer(const Json &config, Loader *loader);
+            ConvolutionLayer(const Json &config, Net *net);
             ~ConvolutionLayer();
             void forward(int thread_num);
         private:

@@ -21,7 +21,7 @@ SOFTWARE.
 #include "layer/concat_layer.h"
 
 namespace mdl {
-    ConcatLayer::ConcatLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    ConcatLayer::ConcatLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::CONCAT;
     }

@@ -21,13 +21,13 @@ SOFTWARE.
 #include "layer/scale_layer.h"
 
 namespace mdl {
-    ScaleLayer::ScaleLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    ScaleLayer::ScaleLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::SCALE;
         auto &param = config["param"];
         _bias_term = param["bias_term"].int_value();
         if (_bias_term > 0) {
-            _bias_layer = new BiasLayer(config, loader);
+            _bias_layer = new BiasLayer(config, net);
 
         }
         _scale = _weight[0];

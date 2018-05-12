@@ -24,7 +24,7 @@ SOFTWARE.
 #include <thread>
 
 namespace mdl {
-    ConvolutionLayer::ConvolutionLayer(const Json &config, Loader *loader) : Layer(config, loader), _col_buffer(nullptr),
+    ConvolutionLayer::ConvolutionLayer(const Json &config, Net *net) : Layer(config, net), _col_buffer(nullptr),
                                                                              _bias_buffer(nullptr) {
         assure_memory();
         _layer_type = LayerType::CONVOLUTION;
@@ -69,12 +69,12 @@ namespace mdl {
         }
     }
 
-    void run1(int id, int m, int n, int k, const float *A, const float *B, float *C) {
-        Gemmer::gemmers[id]->sgemm(m, n, k, A, B, C);
+    void run1(Gemmer *gemmer, int m, int n, int k, const float *A, const float *B, float *C) {
+        gemmer->sgemm(m, n, k, A, B, C);
     }
 
-    void run2(int id, int m, int n, int k, const float *A, const float *B, float *C, float alpha, float beta) {
-        Gemmer::gemmers[id]->sgemm(m, n, k, A, B, C, alpha, beta);
+    void run2(Gemmer *gemmer, int m, int n, int k, const float *A, const float *B, float *C, float alpha, float beta) {
+        gemmer->sgemm(m, n, k, A, B, C, alpha, beta);
     }
 
     void ConvolutionLayer::forward(int thread_num) {
@@ -125,7 +125,7 @@ namespace mdl {
                 if (i == thread_num - 1) {
                     row_count = m1 + m2;
                 }
-                ths[i] = std::thread(run1, i, row_count, n, k, weight_data + i * m1 * k, col_data,
+                ths[i] = std::thread(run1, _gemmers[i].get(), row_count, n, k, weight_data + i * m1 * k, col_data,
                                      output_data + i * m1 * n);
             }
             for (int j = 0; j < thread_num; ++j) {
@@ -137,7 +137,7 @@ namespace mdl {
         }
 
         int pid = this->pid();
-        if (pid < 1 || pid > Gemmer::gemmers.size()) {
+        if (pid < 1 || pid > _gemmers.size()) {
             pid = 1;
         }
 #else
@@ -145,7 +145,7 @@ namespace mdl {
 #endif
 
         for (int i = 0; i < _group; ++i) {
-            Gemmer::gemmers[pid - 1]->sgemm(m / _group, n, k, weight_data + weight_offset_ * i,
+            _gemmers[pid - 1]->sgemm(m / _group, n, k, weight_data + weight_offset_ * i,
                                             col_data + col_offset_ * i, output_data + output_offset_ * i);
 
         }
@@ -168,8 +168,8 @@ namespace mdl {
                 if (i == thread_num - 1) {
                     row_count = m1 + m2;
                 }
-                ths[i] = std::thread(run2, i, row_count, n, k, bias_data + i * m1 * k, _bias_buffer->get_data(),
-                                     output_data + i * m1 * n, 1.0, 1.0);
+                ths[i] = std::thread(run2, _gemmers[i].get(), row_count, n, k, bias_data + i * m1 * k, _bias_buffer->get_data(),
+                                     output_data + i * m1 * n, 1.0f, 1.0f);
             }
             for (int j = 0; j < thread_num; ++j) {
                 ths[j].join();
@@ -180,14 +180,14 @@ namespace mdl {
         }
 
         int pid = this->pid();
-        if (pid < 1 || pid > Gemmer::gemmers.size()) {
+        if (pid < 1 || pid > _gemmers.size()) {
             pid = 1;
         }
 #else
         int pid = 1;
 #endif
 
-        Gemmer::gemmers[pid - 1]->sgemm(m, n, k, bias_data, _bias_buffer->get_data(), output_data, 1.0, 1.0);
+        _gemmers[pid - 1]->sgemm(m, n, k, bias_data, _bias_buffer->get_data(), output_data, 1.0, 1.0);
     }
 
 };

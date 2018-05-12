@@ -87,9 +87,10 @@ license and copyright terms herein.
 
 #ifdef ANDROID
 #include <android/log.h>
-//#include "math/neon_mathfun.h"
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4244 4267 4305 4309 4838 )
 #include "math/neon_mathfun.h"
 
 #ifndef MDL_MAC
@@ -99,6 +100,8 @@ license and copyright terms herein.
     #include "neon_2_sse/NEON_2_SSE.h"
   #endif
 #endif
+
+#pragma warning( pop )
 
 #include "json/json11.h"
 #include "math/math.h"

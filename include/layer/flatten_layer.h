@@ -30,7 +30,7 @@ namespace mdl {
     public:
         int flatten_start = 1;
         int flatten_end = -1;
-        FlattenLayer(const Json &config, Loader *loader);
+        FlattenLayer(const Json &config, Net *net);
         ~FlattenLayer();
 
         void forward(int thread_num);

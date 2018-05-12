@@ -22,7 +22,7 @@ SOFTWARE.
 #include "layer/sigmoid_layer.h"
 
 namespace mdl {
-    SigmoidLayer::SigmoidLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    SigmoidLayer::SigmoidLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::SIGMOID;
 

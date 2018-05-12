@@ -76,12 +76,6 @@ int find_max(vector<float> data) {
 
 int run() {
     // thread num should set 1 while using mobilenet & resnet
-    int thread_num = 3;
-    if (mdl::Gemmer::gemmers.size() == 0) {
-        for (int i = 0; i < max(thread_num, 3); i++) {
-            mdl::Gemmer::gemmers.push_back(std::shared_ptr<mdl::Gemmer>(new mdl::Gemmer()));
-        }
-    }
     std::shared_ptr<mdl::Loader> loader(new mdl::Loader());
     std::string prefix("K:/paddle-mobile/build/x64/build/");
     auto t1 = mdl::time();
@@ -109,7 +103,6 @@ int run() {
   fin.close();
     mdl::Net *net = new mdl::Net(loader.get());
   
-    net->set_thread_num(thread_num);
     int count = 1;
     double total = 0;
     vector<float> result;

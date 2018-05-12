@@ -23,6 +23,9 @@ SOFTWARE.
 
 #include "base/matrix.h"
 
+#include <vector>
+#include <memory>
+
 namespace mdl {
     /**
      * abstract layer type
@@ -32,7 +35,8 @@ namespace mdl {
         RELU, SPLIT, SCALE, BATCHNORMAL, SOFTMAX, SIGMOID, BIAS,
     ELTWISE};
 
-    class Loader;
+    class Net;
+    struct Gemmer;
   
     class Layer {
     public:
@@ -43,7 +47,7 @@ namespace mdl {
          * @param loader
          * @return
          */
-        Layer(const Json &config, Loader *loader);
+        Layer(const Json &config, Net *net);
 
         virtual ~Layer() {
         }
@@ -118,6 +122,8 @@ namespace mdl {
         vector<Matrix *> _output;
 
         vector<Matrix *> _weight;
+
+        vector< std::shared_ptr<Gemmer> > &_gemmers;
     };
 };
 

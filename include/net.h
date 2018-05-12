@@ -22,8 +22,13 @@ SOFTWARE.
 #define MDL_NET_H
 
 #include "base/layer.h"
+#include "math/gemm.h"
+
+#include <memory>
 
 namespace mdl {
+    class Loader;
+
     /**
      * do object detection with Net object
      */
@@ -59,15 +64,29 @@ namespace mdl {
          * set the thread num
          * @param thread_num
          */
-        void set_thread_num(int thread_num) {
+        void set_thread_num(int thread_num)
+        {
             _thread_num = thread_num;
+            _gemmers.clear();
+            for (int i = 0; i < _thread_num; ++i)
+            {
+                _gemmers.push_back(std::shared_ptr<Gemmer>(new Gemmer()));
+            }
+        }
+
+        vector< std::shared_ptr<Gemmer> > &getGemmers()
+        {
+            return _gemmers;
+        }
+
+        Loader *getLoader()
+        {
+          return _loader;
         }
 
 #ifdef NEED_DUMP
 
         void dump(string filename);
-
-
 
 #endif
     private:
@@ -78,6 +97,8 @@ namespace mdl {
         vector<Layer *> _layers;
       
         Loader * _loader;
+
+        vector< std::shared_ptr<Gemmer> > _gemmers;
 
 #ifdef NEED_DUMP
         void dump_with_quantification(string filename);

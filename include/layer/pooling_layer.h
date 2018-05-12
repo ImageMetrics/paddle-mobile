@@ -27,7 +27,7 @@ SOFTWARE.
 namespace mdl {
     class PoolingLayer: public Layer {
         public:
-            PoolingLayer(const Json &config, Loader *loader);
+            PoolingLayer(const Json &config, Net *net);
             void forward(int thread_num);
             void forward_max();
             void forward_ave();

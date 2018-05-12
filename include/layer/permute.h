@@ -10,7 +10,7 @@
 namespace mdl {
     class PermuteLayer : Layer {
     public:
-        PermuteLayer(const Json &config, Loader *loader);
+        PermuteLayer(const Json &config, Net *net);
         ~PermuteLayer();
         void forward(int thread_num);
 

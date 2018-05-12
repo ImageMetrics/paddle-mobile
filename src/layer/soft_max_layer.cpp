@@ -22,7 +22,7 @@ SOFTWARE.
 #include "math/gemm.h"
 
 namespace mdl {
-    SoftmaxLayer::SoftmaxLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    SoftmaxLayer::SoftmaxLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         _layer_type = LayerType::SOFTMAX;
         _softmax_dim = 1;
@@ -68,7 +68,7 @@ namespace mdl {
                 }
 
             }
-            Gemmer::gemmers[0]->sgemm(channels, _inner_count, 1,
+            _gemmers[0]->sgemm(channels, _inner_count, 1,
                                       _sum_matrix->get_data(), scale_data, output_data, -1., 1);
 
             Math::v_exp(dim, output_data, output_data);

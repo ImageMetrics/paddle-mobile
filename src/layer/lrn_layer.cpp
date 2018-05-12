@@ -21,7 +21,7 @@ SOFTWARE.
 #include "layer/lrn_layer.h"
 
 namespace mdl {
-    LrnLayer::LrnLayer(const Json &config, Loader *loader) : Layer(config, loader) {
+    LrnLayer::LrnLayer(const Json &config, Net *net) : Layer(config, net) {
         assure_memory();
         auto &param = config["param"];
         _layer_type = LayerType::LRN;
