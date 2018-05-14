@@ -77,7 +77,7 @@ int find_max(vector<float> data) {
 int run() {
     // thread num should set 1 while using mobilenet & resnet
     std::shared_ptr<mdl::Loader> loader(new mdl::Loader());
-    std::string prefix("K:/paddle-mobile/build/x64/build/");
+    std::string prefix("/Users/jeffpai/dev/linux/Dockerfile/test/");
     auto t1 = mdl::time();
     bool load_success = loader->load(prefix + "model.min.json", prefix + "data.min.bin");
     auto t2 = mdl::time();
@@ -108,7 +108,7 @@ int run() {
     vector<float> result;
     for (int i = 0; i < count; i++) {
         Time t1 = mdl::time();
-        result = net->predict(data);
+        result = net->predict(data, "images");
         Time t2 = mdl::time();
         double diff = mdl::time_diff(t1, t2);
         total += diff;

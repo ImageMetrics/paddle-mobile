@@ -105,7 +105,7 @@ namespace mdl {
         }
     }
 
-    vector<float> Net::forward_from_to(float *image, int start, int end, bool sampling) {
+    vector<float> Net::forward_from_to(float *image, int start, int end, const string &inputName, bool sampling) {
         vector<float> result;
         if (image == nullptr) {
             Matrix *test_data_matrix = _loader->_matrices[matrix_name_test_data];
@@ -118,7 +118,7 @@ namespace mdl {
             throw_exception("image is still nullptr");
         }
 
-        Matrix *data_matrix = _loader->_matrices[matrix_name_data];
+        Matrix *data_matrix = _loader->_matrices[inputName];
         if (data_matrix == nullptr) {
             throw_exception("data_matrix is nullptr");
         }
@@ -187,10 +187,10 @@ namespace mdl {
         return result;
     }
 
-    vector<float> Net::predict(float *image) {
+    vector<float> Net::predict(float *image, const string &inputName) {
         int start = 0;
         int end = _layers.size();
-        return Net::forward_from_to(image, start, end);
+        return Net::forward_from_to(image, start, end, inputName);
     }
 
 #ifdef NEED_DUMP

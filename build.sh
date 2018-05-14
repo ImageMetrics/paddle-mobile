@@ -19,7 +19,7 @@ build_linux_fn() {
             return
         fi
     fi
-    PLATFORM="x86"
+    PLATFORM="linux"
     MODE="Release"
     CXX_FLAGS="-std=c++11 -DMDL_LINUX"
     LD_FLAGS="-pthread "
@@ -60,7 +60,7 @@ build_mac_fn() {
             return
         fi
     fi
-    PLATFORM="x86"
+    PLATFORM="mac"
     MODE="Release"
     CXX_FLAGS="-std=c++11"
     BUILD_DIR=build/release/"${PLATFORM}"

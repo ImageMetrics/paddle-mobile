@@ -304,7 +304,15 @@ void calcu_layer_shape(map<string, vector<int> > &shape_map, const LayerParamete
                 const caffe::ConvolutionParameter &conv_param = layer.convolution_param();
 
                 int num_output = conv_param.num_output();
-                int kernel_size = conv_param.kernel_size(0);
+                int kernel_size = 0;
+                if(conv_param.has_kernel_w())
+                {
+                  kernel_size = conv_param.kernel_w();
+                }
+                else
+                {
+                  kernel_size = conv_param.kernel_size(0);
+                }
                 int pad = conv_param.pad_size() > 0 ? conv_param.pad(0) : 0;
                 int stride = conv_param.stride_size() > 0 ? conv_param.stride(0) : 1;
 
@@ -401,15 +409,28 @@ void calcu_layer_shape(map<string, vector<int> > &shape_map, const LayerParamete
 
                 } else {
                     if (!pool_param.has_kernel_size()) {
-                        stringstream msg;
-                        msg<<layer.name()<<"'s pooling kernel_size should be configed!";
-                        throw msg.str();
+                        if(pool_param.has_kernel_w())
+                        {
+                          kernel_size = pool_param.kernel_w();
+                        }
+                        else
+                        {
+                          stringstream msg;
+                          msg<<layer.name()<<"'s pooling kernel_size should be configed!";
+                          throw msg.str();
+                        }
                     } else {
                         kernel_size = pool_param.kernel_size();
                     }
                     pad = pool_param.pad();
-                    stride = pool_param.stride();
-
+                    if(pool_param.has_stride())
+                    {
+                      stride = pool_param.stride();
+                    }
+                    else
+                    {
+                      stride = pool_param.stride_w();
+                    }
                 }
 
                 vector<int> top_shape;
@@ -747,7 +768,8 @@ void dump_json(string filename) {
             json_string_stream << "," << endl;
             json_string_stream << "\"param\":{" << endl;
             json_string_stream << "\"output_num\":" << conv_param.num_output() << "," << endl;
-            json_string_stream << "\"kernel_size\":" << conv_param.kernel_size(0) << "," << endl;
+            int kernel_sized = conv_param.has_kernel_w() ? conv_param.kernel_w() : conv_param.kernel_size(0);
+            json_string_stream << "\"kernel_size\":" << kernel_sized << "," << endl;
             int pad = conv_param.pad_size() != 0 ? conv_param.pad(0) : 0;
             json_string_stream << "\"pad\":" << pad << "," << endl;
             int stride = conv_param.stride_size() != 0 ? conv_param.stride(0) : 1;
@@ -776,9 +798,9 @@ void dump_json(string filename) {
             if (poolingParameter.global_pooling()) {
                 json_string_stream << "\"global_pooling\":" << "true" << endl;
             } else {
-                json_string_stream << "\"kernel_size\":" << poolingParameter.kernel_size() << "," << endl;
+              json_string_stream << "\"kernel_size\":" << (poolingParameter.has_kernel_w() ? poolingParameter.kernel_w() : poolingParameter.kernel_size()) << "," << endl;
                 json_string_stream << "\"pad\":" << poolingParameter.pad() << "," << endl;
-                json_string_stream << "\"stride\":" << poolingParameter.stride() << endl;
+              json_string_stream << "\"stride\":" << (poolingParameter.has_stride() ? poolingParameter.stride() : poolingParameter.stride_w()) << endl;
 
             }
             json_string_stream << "}" << endl;

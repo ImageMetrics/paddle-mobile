@@ -46,19 +46,21 @@ namespace mdl {
         /**
          * object detection
          * @param image
+         * @param inputName
          * @return vector of float
          */
-        vector<float> predict(float *image);
+        vector<float> predict(float *image, const string &inputName = matrix_name_test_data);
 
         /**
          * forward
          * @param image
          * @param start
          * @param end
+         * @param inputName
          * @param sampling
          * @return vector of float
          */
-        vector<float> forward_from_to(float *image, int start, int end, bool sampling = false);
+        vector<float> forward_from_to(float *image, int start, int end, const string &inputName = matrix_name_test_data, bool sampling = false);
 
         /**
          * set the thread num
