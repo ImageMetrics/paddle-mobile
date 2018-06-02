@@ -510,19 +510,25 @@ void calcu_blobs_shape(map<string, vector<int> > &shape_map, const LayerParamete
 void read_input_shape(map<string, vector<int> > *shape_map, caffe::NetParameter proto) {
     vector<int> input_dimens;
     if (proto.input_dim_size() == 0) {
-        auto input_layer = proto.layer(0);
-        auto input_name = input_layer.top(0);
-
-        auto input_param = input_layer.input_param();
-        auto shape = input_param.shape(0);
-
-        vector<int> shape_vec;
-        input_data_count = 1;
-        for (int i = 0; i < shape.dim_size(); ++i) {
-            shape_vec.push_back(shape.dim(i));
-            input_data_count *= shape.dim(i);
+        for(int layerIdx = 0; layerIdx < proto.layer_size(); ++layerIdx)
+        {
+            auto input_layer = proto.layer(layerIdx);
+            if(input_layer.type() == "Input")
+            {
+                auto input_name = input_layer.top(0);
+              
+                auto input_param = input_layer.input_param();
+                auto shape = input_param.shape(0);
+              
+                vector<int> shape_vec;
+                input_data_count = 1;
+                for (int i = 0; i < shape.dim_size(); ++i) {
+                    shape_vec.push_back(shape.dim(i));
+                    input_data_count *= shape.dim(i);
+                }
+                shape_map->insert(make_pair(input_name, shape_vec));
+            }
         }
-        shape_map->insert(make_pair(input_name, shape_vec));
         return;
     }
 
